@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="resources\background.wav" />
+    <None Remove="resources\Body.png" />
+    <None Remove="resources\crash.wav" />
+    <None Remove="resources\DeadBody.png" />
+    <None Remove="resources\DeadHead.png" />
+    <None Remove="resources\ding.wav" />
+    <None Remove="resources\DroidSansMono.ttf" />
+    <None Remove="resources\Empty.png" />
+    <None Remove="resources\Food.png" />
+    <None Remove="resources\Head.png" />
+    <None Remove="resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="resources\background.wav" />
+    <EmbeddedResource Include="resources\crash.wav" />
+    <EmbeddedResource Include="resources\ding.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="resources\Body.png" />
+    <Resource Include="resources\DeadBody.png" />
+    <Resource Include="resources\DeadHead.png" />
+    <Resource Include="resources\DroidSansMono.ttf" />
+    <Resource Include="resources\Empty.png" />
+    <Resource Include="resources\Food.png" />
+    <Resource Include="resources\Head.png" />
+    <Resource Include="resources\icon.ico" />
+  </ItemGroup>
+
+</Project>
