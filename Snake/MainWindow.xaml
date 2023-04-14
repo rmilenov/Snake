@@ -10,7 +10,8 @@
         Foreground="{StaticResource TextColor}"
         FontFamily="{StaticResource MainFont}"
         WindowStartupLocation="CenterScreen"
-        Icon="resources/icon.ico"     
+        Icon="resources/icon.ico"
+        
         KeyDown="Window_KeyDown"
         MinHeight="300" MinWidth="300"
       
@@ -68,7 +69,7 @@
                      VerticalAlignment="Bottom"
                      Height="40"
                      Width="185"
-                     Margin="10,0,0,10"
+                     Margin="0,0,0,10"
                      FontSize="20"
                      TextAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -99,7 +100,7 @@
                      FontSize="20"
                      Height="40"
                      Width="185"
-                     Margin="0,0,10,10"
+                     Margin="0,0,0,10"
                      BorderThickness="1" RenderTransformOrigin="0.5,0.5" ClickMode="Press" Click="OnClick"
                      >
                         <Button.Resources>

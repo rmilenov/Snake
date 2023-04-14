@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using Snake.resources;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -22,10 +24,20 @@ namespace Snake
         public void PlayBackgroundMusic()
         {
             isPlaying = true;
-            wowSound.Open(new Uri("C:\\Users\\Radostin.Milenov\\Desktop\\Unterricht\\Programmierung Verteifung\\Snake\\Snake\\resources\\background.wav")); //Open the file for a media playback
+            wowSound.MediaEnded += new EventHandler(Media_Ended);
+            wowSound.Open(new Uri("file://resources/background.wav", UriKind.Relative));
+            //wowSound.Open(new Uri("C:\\Users\\Radostin.Milenov\\Desktop\\Unterricht\\Programmierung Verteifung\\Snake\\Snake\\resources\\background.wav")); //Open the file for a media playback
             wowSound.Volume = 0.35;
             wowSound.Play(); //Play the media
+            return;
         }
+
+        private void Media_Ended(object sender, EventArgs e)
+        {
+            wowSound.Position = TimeSpan.Zero;
+            wowSound.Play();
+        }
+
         public void PauseBackgroundMusic()
         {
             wowSound.Pause();
@@ -36,8 +48,18 @@ namespace Snake
             isPlaying= true;
             wowSound.Pause();
         }
-        public static readonly SoundPlayer collision = new SoundPlayer("C:\\Users\\Radostin.Milenov\\Desktop\\Unterricht\\Programmierung Verteifung\\Snake\\Snake\\resources\\crash.wav");
-        public static readonly SoundPlayer ding = new SoundPlayer("C:\\Users\\Radostin.Milenov\\Desktop\\Unterricht\\Programmierung Verteifung\\Snake\\Snake\\resources\\ding.wav");
-        
+        public static readonly SoundPlayer collision = new SoundPlayer(global::Snake.resources.Resource2.crash);
+        public static readonly SoundPlayer ding = new SoundPlayer(global::Snake.resources.Resource3.ding);
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+
     }
 }

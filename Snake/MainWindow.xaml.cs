@@ -97,6 +97,7 @@ namespace Snake
 
         private async void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            //if (e.Key == Key.Enter) { await InputButton. }
             if (Overlay.Visibility == Visibility.Visible)
             {
                 e.Handled = true;
@@ -180,11 +181,12 @@ namespace Snake
             await Task.Delay(500);
             InputLabel.Visibility = Visibility.Hidden;
             InputField.Visibility = Visibility.Hidden;
-
             InputButton.Visibility = Visibility.Visible;
             InputButton.Content = "Yes";
+            InputButton.HorizontalContentAlignment = HorizontalAlignment.Center;
+            InputButton.HorizontalAlignment = HorizontalAlignment.Center;
             Overlay.Visibility = Visibility.Visible;
-            OverlayText.Text = "Try again ?";
+            OverlayText.Text = "Try again?";
             OverlayText.FontSize=22;
         }
 
@@ -218,6 +220,9 @@ namespace Snake
             if (!gameRunning)
             {
                 gameState.Player = InputField.Text;
+                InputButton.Visibility = Visibility.Hidden;
+                InputField.Visibility = Visibility.Hidden;
+                InputLabel.Visibility = Visibility.Hidden;
                 gameRunning = true;
                 await RunGame();
                 gameRunning = false;
