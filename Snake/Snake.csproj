@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="resources\background.wav" />
     <None Remove="resources\Body.png" />
     <None Remove="resources\crash.wav" />
     <None Remove="resources\DeadBody.png" />
@@ -22,10 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="resources\background.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <EmbeddedResource Include="resources\crash.wav" />
+    <PackageReference Include="NAudio" Version="2.1.0" />
     <Resource Include="resources\ding.wav" />
   </ItemGroup>
 
@@ -41,11 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="resources\Resource1.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
     <Compile Update="resources\Resource2.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -59,10 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="resources\Resource1.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="resources\Resource2.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource2.Designer.cs</LastGenOutput>

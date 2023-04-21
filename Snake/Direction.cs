@@ -5,7 +5,7 @@ namespace Snake
 {
     public class Direction
     {
-        public readonly static Direction Left = new Direction(0,-1);
+        public readonly static Direction Left = new Direction(0, -1);
         public readonly static Direction Right = new Direction(0, 1);
         public readonly static Direction Up = new Direction(-1, 0);
         public readonly static Direction Down = new Direction(1, 0);
@@ -13,10 +13,10 @@ namespace Snake
         public int RowOffset { get; }
         public int ColumnOffset { get; }
 
-        private Direction(int rowOffset,int columnOffset) 
+        private Direction(int rowOffset, int columnOffset)
         {
             this.ColumnOffset = columnOffset;
-            this .RowOffset = rowOffset;    
+            this.RowOffset = rowOffset;
         }
         public Direction Opposite()
         {

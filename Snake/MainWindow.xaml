@@ -11,9 +11,10 @@
         FontFamily="{StaticResource MainFont}"
         WindowStartupLocation="CenterScreen"
         Icon="resources/icon.ico"
-        
+        PreviewKeyDown="Window_PreviewKeyDown"
         KeyDown="Window_KeyDown"
         MinHeight="300" MinWidth="300"
+        
       
         >
         
@@ -21,6 +22,7 @@
     <Viewbox>
 
         <Grid>
+           
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
@@ -56,7 +58,13 @@
                     Height="{Binding Path=ActualHeight, ElementName=GridBorder}"
                     Margin="{Binding Path=Margin, ElementName=GridBorder}"
                     RenderOptions.EdgeMode="Aliased">
-                <Grid>
+                <Border.Effect>
+                    <DropShadowEffect/>
+                </Border.Effect>
+                <Grid FocusManager.FocusedElement="{Binding ElementName=InputField}"
+                     >
+                    
+                    
                     <TextBlock x:Name="InputLabel"
                      Text="Enter your name"
                      HorizontalAlignment="Center"
@@ -65,23 +73,31 @@
                      FontSize="20">
                     </TextBlock>
                     <TextBox x:Name="InputField"
+                     Keyboard.GotKeyboardFocus="InputField_GotKeyboardFocus"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Bottom"
                      Height="40"
                      Width="185"
-                     Margin="0,0,0,10"
+                     Margin="5,0,0,10"
                      FontSize="20"
                      TextAlignment="Center"
                      VerticalContentAlignment="Center"
                      Background="{StaticResource GridBackgroundColor}"
                      Foreground="{StaticResource TextColor}"
-                     BorderThickness="0" RenderTransformOrigin="0.5,0.5" Text="">
+                     BorderThickness="0" RenderTransformOrigin="0.5,0.5" Text="" Opacity="0.9" AutomationProperties.IsRequiredForForm="True" InputScope="PersonalFullName">
                         <TextBox.Resources>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="6"/>
 
                             </Style>
                         </TextBox.Resources>
+                        
+                        <TextBox.Effect>
+                            <DropShadowEffect/>
+                        </TextBox.Effect>
+                        <TextBox.BorderBrush>
+                            <Binding Mode="OneWay" Source="{StaticResource ButtonBorder}"/>
+                        </TextBox.BorderBrush>
                         <TextBox.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -100,14 +116,17 @@
                      FontSize="20"
                      Height="40"
                      Width="185"
-                     Margin="0,0,0,10"
+                     Margin="0,0,5,10"
                      BorderThickness="1" RenderTransformOrigin="0.5,0.5" ClickMode="Press" Click="OnClick"
                      >
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="6"/>
                             </Style>
-                        </Button.Resources> Send
+                        </Button.Resources>
+                        <Button.BorderBrush>
+                            <Binding Mode="OneWay" Source="{StaticResource ButtonBorder}"/>
+                        </Button.BorderBrush> Send
                     </Button>
                     <TextBlock x:Name="OverlayText"
                            Text="S-s-snake!"

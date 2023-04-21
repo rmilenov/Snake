@@ -9,6 +9,8 @@
         <SolidColorBrush x:Key="GridLineColor">#211E2b</SolidColorBrush>
         <SolidColorBrush x:Key="TextColor">#ebebeb</SolidColorBrush>
         <SolidColorBrush x:Key="OverlayColor">#7f000000</SolidColorBrush>
+        <SolidColorBrush x:Key="ButtonBorder">#6f6491</SolidColorBrush>
         <FontFamily x:Key="MainFont">resources/#Droid Sans Mono</FontFamily>
+        
     </Application.Resources>
 </Application>

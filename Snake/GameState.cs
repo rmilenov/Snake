@@ -1,46 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.Pkcs;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Snake
 {
     public class GameState
     {
-        public int Rows { get;}
+        public int Rows { get; }
         public int Columns { get; }
         public GridValue[,] Grid { get; private set; }
         public Direction Direction { get; private set; }
         public int Score { get; private set; }
+        private bool ScoreChanged { get; set; }
         public bool GameOver { get; private set; }
         public string Player { get; set; }
+        public int Speed { get; set; }
 
         private readonly LinkedList<Direction> dirChanges = new LinkedList<Direction>();
-        private readonly LinkedList<Position> snakePositions= new LinkedList<Position>();
+        private readonly LinkedList<Position> snakePositions = new LinkedList<Position>();
         private readonly Random random = new Random();
 
         public GameState(int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
-            Grid = new GridValue[Rows,Columns];
+            Grid = new GridValue[Rows, Columns];
             Direction = Direction.Right;
             Player = "";
+            Speed = 200;
+            ScoreChanged = false;
+
 
             AddSnake();
             AddFood();
-           
+
         }
 
         private void AddSnake()
         {
             int row = Rows / 2;
-            for (int col =1;col<=3;col++)
+            for (int col = 1; col <= 3; col++)
             {
-                Grid[row,col] = GridValue.Snake;
+                Grid[row, col] = GridValue.Snake;
                 snakePositions.AddFirst(new Position(row, col));
             }
         }
@@ -48,7 +48,7 @@ namespace Snake
         {
             for (int row = 0; row < Rows; row++)
             {
-                for (int col = 0; col<Columns;col++)
+                for (int col = 0; col < Columns; col++)
                 {
                     if (Grid[row, col] == GridValue.Empty)
                     {
@@ -66,8 +66,8 @@ namespace Snake
             Grid[pos.Row, pos.Column] = GridValue.Food;
         }
         public Position HeadPosition()
-        { 
-            return snakePositions.First.Value; 
+        {
+            return snakePositions.First.Value;
         }
         public Position TailPosition()
         {
@@ -90,11 +90,11 @@ namespace Snake
         }
         private Direction GetLastDirection()
         {
-            if (dirChanges.Count==0)
+            if (dirChanges.Count == 0)
             {
                 return Direction;
             }
-            return dirChanges.Last.Value; 
+            return dirChanges.Last.Value;
         }
         private bool CanChangeDirection(Direction newDir)
         {
@@ -103,15 +103,15 @@ namespace Snake
                 return false;
             }
             Direction lastDir = GetLastDirection();
-            return newDir!=lastDir && newDir!=lastDir.Opposite();
+            return newDir != lastDir && newDir != lastDir.Opposite();
         }
         public void ChangeDirection(Direction dir)
         {
-            if(CanChangeDirection(dir)) dirChanges.AddLast(dir);
+            if (CanChangeDirection(dir)) dirChanges.AddLast(dir);
         }
         private bool OutsideGrid(Position pos)
         {
-            return pos.Row < 0 ||pos.Row >= Rows|| pos.Column < 0||pos.Column >= Columns;
+            return pos.Row < 0 || pos.Row >= Rows || pos.Column < 0 || pos.Column >= Columns;
         }
         private GridValue Collision(Position newHeadPosition)
         {
@@ -123,11 +123,11 @@ namespace Snake
             {
                 return GridValue.Empty;
             }
-            return Grid[newHeadPosition.Row,newHeadPosition.Column];
+            return Grid[newHeadPosition.Row, newHeadPosition.Column];
         }
         public void Move()
         {
-            if (dirChanges.Count >0)
+            if (dirChanges.Count > 0)
             {
                 Direction = dirChanges.First.Value;
                 dirChanges.RemoveFirst();
@@ -135,24 +135,40 @@ namespace Snake
             Position newHeadPosition = HeadPosition().Translate(Direction);
             GridValue hit = Collision(newHeadPosition);
 
-            if(hit==GridValue.Outside|| hit == GridValue.Snake)
+            if (hit == GridValue.Outside || hit == GridValue.Snake)
             {
                 Sound.collision.Play();
                 GameOver = true;
             }
-            else if ( hit==GridValue.Empty)
+            else if (hit == GridValue.Empty)
             {
                 RemoveTail();
                 AddHead(newHeadPosition);
+
             }
-            else if (hit==GridValue.Food)
+            else if (hit == GridValue.Food)
             {
-                
-                Sound.ding.Play(); 
+
+                Sound.ding.Play();
                 AddHead(newHeadPosition);
                 Score++;
+                ScoreChanged = true;
+                ChangeSpeed();
                 AddFood();
+
             }
+        }
+        public int ChangeSpeed()// Lower value means faster
+        {
+
+
+            if ((ScoreChanged && this.Score > 9 && this.Score % 10 == 0) && this.Speed >= 80)
+            {
+                this.Speed -= 20;
+                this.ScoreChanged = false;
+            }
+
+            return this.Speed;
         }
     }
 }
