@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Snake"
         mc:Ignorable="d"
         Title="Snake" Height="500" Width="800"
         Background="{StaticResource BackgroundColor}"
@@ -26,7 +25,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
-
             </Grid.RowDefinitions>
 
             <TextBlock x:Name="ScoreText"
@@ -64,7 +62,8 @@
                     Width="{Binding Path=ActualWidth, ElementName=GridBorder}"
                     Height="{Binding Path=ActualHeight, ElementName=GridBorder}"
                     Margin="{Binding Path=Margin, ElementName=GridBorder}"
-                    RenderOptions.EdgeMode="Aliased">
+                    RenderOptions.EdgeMode="Aliased"
+                    Visibility="Visible">
                 <Border.Effect>
                     <DropShadowEffect/>
                 </Border.Effect>

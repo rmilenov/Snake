@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using HubConnection = Microsoft.AspNetCore.SignalR.Client.HubConnection;
 
@@ -29,13 +30,15 @@ namespace SnakeVisualizer
         private string json="";
         private bool isDirty=false;
         private readonly int rows = 20, cols = 20;
-        private readonly Image[,] gridImages;
+        internal Image[,] gridImages;
         private GameState gameState;
         HubConnection connection;
         public MainWindow()
         {
            
             InitializeComponent();
+            gridImages = SetupGrid();
+            //gameState = new GameState(rows, cols);
             connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7059/snakehub")
             .WithAutomaticReconnect()
@@ -85,9 +88,8 @@ namespace SnakeVisualizer
 
                 return Task.CompletedTask;
             };
-            
-            gridImages = SetupGrid();
-            GetMessage();
+
+            _ = GetMessage();
            
 
         }
@@ -136,21 +138,21 @@ namespace SnakeVisualizer
         //    }));
         //    return;
         //}
-        private async Task GetMessage()
+        private Task GetMessage()
         {
             connection.On<string, string>("ReceiveMessage", (user, message) =>
             {
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     var newMessage = $"{user}: {message}";
                     messages.Items.Add(newMessage);
-                    this.json = newMessage;
+                    json = newMessage;
                     
                 });
             });
-
-            
+            return Task.CompletedTask;
         }
+
         //private async Task ReceiveGameState()
         //{
         //    connection.On<string>("ReceiveGameState", (message) =>
@@ -160,27 +162,33 @@ namespace SnakeVisualizer
 
         //            this.json = message.ToString();
         //            messages.Items.Add(message);
-                    
+
         //        });
         //    });
-            
+
         //}
-        private async Task ReceiveGameState()
+        private Task ReceiveGameState()
         {
             connection.On<string>("ReceiveGameState", (message) =>
             {
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
 
                     
                     gameState = JsonConvert.DeserializeObject<GameState>(message);
-                    messages.Items.Add(message);
+                    JsonConvert.PopulateObject(json, gameState);
+                    if (messages.Items.Count > 0)
+                    {
+                        messages.Items.RemoveAt(1);
+                        messages.Items.Add(message);
+                    }
                     isDirty = true;
 
                 });
             });
-
+            return Task.CompletedTask;
         }
+
         private async Task GameLoop()
         {
 
@@ -188,8 +196,11 @@ namespace SnakeVisualizer
             {
                 //sendButton_Click(gameStateJson);
                 await ReceiveGameState();
-                GameState gameState = new GameState(rows, cols);
+                //GameState gameState = new GameState(rows, cols);
                 gameState = JsonConvert.DeserializeObject<GameState>(json);
+                Popup popup = new Popup(gameState);
+                //gridImages = SetupGrid();
+                //gameState.Move();
                 Draw();
 
             } while (!gameState.GameOver);
@@ -204,7 +215,11 @@ namespace SnakeVisualizer
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            while(isDirty) await GameLoop();
+            while (isDirty)
+            { 
+                Draw(); 
+                await GameLoop();
+            }
         }
 
         private void DrawSnakeHead()

@@ -8,12 +8,65 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="resources\Body.png" />
+    <None Remove="resources\crash.wav" />
+    <None Remove="resources\DeadBody.png" />
+    <None Remove="resources\DeadHead.png" />
+    <None Remove="resources\ding.wav" />
+    <None Remove="resources\DroidSansMono.ttf" />
+    <None Remove="resources\Empty.png" />
+    <None Remove="resources\Food.png" />
+    <None Remove="resources\Head.png" />
+    <None Remove="resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="resources\crash.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.SignalR.Client" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client.Core" Version="7.0.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SnakeServer\SnakeServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="resources\Body.png" />
+    <Resource Include="resources\DeadBody.png" />
+    <Resource Include="resources\DeadHead.png" />
+    <Resource Include="resources\ding.wav" />
+    <Resource Include="resources\DroidSansMono.ttf" />
+    <Resource Include="resources\Empty.png" />
+    <Resource Include="resources\Food.png" />
+    <Resource Include="resources\Head.png" />
+    <Resource Include="resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="resources\Resource2.Designer.cs">
+      <DependentUpon>Resource2.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="resources\Resource3.Designer.cs">
+      <DependentUpon>Resource3.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="resources\Resource2.resx">
+      <LastGenOutput>Resource2.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="resources\Resource3.resx">
+      <LastGenOutput>Resource3.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
