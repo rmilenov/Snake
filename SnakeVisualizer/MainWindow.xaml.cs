@@ -3,19 +3,10 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using HubConnection = Microsoft.AspNetCore.SignalR.Client.HubConnection;
 
 namespace SnakeVisualizer
@@ -35,21 +26,31 @@ namespace SnakeVisualizer
             {Direction.Up , 0 }, {Direction.Down,180 },
             {Direction.Right,90 }, {Direction.Left, 270}
         };
-        private string json;
+        private string json="";
+        private bool isDirty=false;
         private readonly int rows = 20, cols = 20;
         private readonly Image[,] gridImages;
         private GameState gameState;
         HubConnection connection;
         public MainWindow()
         {
+           
             InitializeComponent();
-            gridImages = SetupGrid();
             connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7059/snakehub")
             .WithAutomaticReconnect()
             .Build();
 
-
+            try
+            {
+                connection.StartAsync();
+                messages.Items.Add("Connection started");
+                
+            }
+            catch (Exception ex)
+            {
+                messages.Items.Add(ex.Message);
+            }
             connection.Reconnecting += (sender) =>
             {
                 this.Dispatcher.Invoke(() =>
@@ -84,21 +85,11 @@ namespace SnakeVisualizer
 
                 return Task.CompletedTask;
             };
-            //gameState = GetGameStateFromServer();
-            GetGameState();
-            gameState = new GameState(20,20);
             
-            try
-            {
-            gameState = (GameState)JsonConvert.DeserializeObject(json);
+            gridImages = SetupGrid();
+            GetMessage();
+           
 
-            }
-            catch(Exception ex)
-            {
-                
-            }
-            DrawGrid();
-            
         }
 
         private Image[,] SetupGrid()
@@ -154,33 +145,75 @@ namespace SnakeVisualizer
                     var newMessage = $"{user}: {message}";
                     messages.Items.Add(newMessage);
                     this.json = newMessage;
+                    
                 });
             });
 
-            try
-            {
-                await connection.StartAsync();
-                messages.Items.Add("Connection started");
-                //connectButton.IsEnabled = false;
-                //sendButton.IsEnabled = true;
-            }
-            catch (Exception ex)
-            {
-                messages.Items.Add(ex.Message);
-            }
+            
         }
-        private async Task GetGameState()
+        //private async Task ReceiveGameState()
+        //{
+        //    connection.On<string>("ReceiveGameState", (message) =>
+        //    {
+        //        this.Dispatcher.Invoke(() =>
+        //        {
+
+        //            this.json = message.ToString();
+        //            messages.Items.Add(message);
+                    
+        //        });
+        //    });
+            
+        //}
+        private async Task ReceiveGameState()
         {
-            connection.On<string>("SendGameState", (message) =>
+            connection.On<string>("ReceiveGameState", (message) =>
             {
                 this.Dispatcher.Invoke(() =>
                 {
 
+                    
+                    gameState = JsonConvert.DeserializeObject<GameState>(message);
                     messages.Items.Add(message);
-                    this.json = message;
+                    isDirty = true;
+
                 });
             });
 
+        }
+        private async Task GameLoop()
+        {
+
+            do
+            {
+                //sendButton_Click(gameStateJson);
+                await ReceiveGameState();
+                GameState gameState = new GameState(rows, cols);
+                gameState = JsonConvert.DeserializeObject<GameState>(json);
+                Draw();
+
+            } while (!gameState.GameOver);
+        }
+        
+        private void Draw()
+        {
+            DrawGrid();
+            DrawSnakeHead();
+            
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            while(isDirty) await GameLoop();
+        }
+
+        private void DrawSnakeHead()
+        {
+            Position headPos = gameState.HeadPosition();
+            Image img = gridImages[headPos.Row, headPos.Column];
+            img.Source = Images.Head;
+            int rotation = dirToRotation[gameState.Direction];
+            img.RenderTransform = new RotateTransform(rotation);
         }
     }
 }

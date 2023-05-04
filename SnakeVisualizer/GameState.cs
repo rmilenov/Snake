@@ -1,22 +1,31 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace SnakeVisualizer
 {
     public class GameState
     {
-        public int Rows { get; }
-        public int Columns { get; }
-        public GridValue[,] Grid { get; private set; }
-        public Direction Direction { get; private set; }
-        public int Score { get; private set; }
+        [JsonProperty("Rows")]
+        public int Rows { get; }//
+        [JsonProperty("Columns")]
+        public int Columns { get; }//
+        [JsonProperty("Grid")]
+        public GridValue[,] Grid { get; private set; }//
+        [JsonProperty("Direction")]
+        public Direction Direction { get; private set; }//
+        [JsonProperty("Score")]
+        public int Score { get; private set; }//
         private bool ScoreChanged { get; set; }
-        public bool GameOver { get; private set; }
-        public string Player { get; set; }
-        public int Speed { get; set; }
+        [JsonProperty("GameOver")]
+        public bool GameOver { get; private set; }//
+        [JsonProperty("Player")]
+        public string Player { get; set; }//
+        [JsonProperty("Speed")]
+        public int Speed { get; set; }//
 
-        public readonly LinkedList<Direction> dirChanges = new LinkedList<Direction>();
-        public readonly LinkedList<Position> snakePositions = new LinkedList<Position>();
+        public readonly LinkedList<Direction> dirChanges = new LinkedList<Direction>();//
+        public readonly LinkedList<Position> snakePositions = new LinkedList<Position>();//
         private readonly Random random = new Random();
 
         public GameState(int rows, int columns)

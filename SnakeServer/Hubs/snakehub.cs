@@ -10,7 +10,7 @@ namespace SnakeServer.Hubs
         }
         public async Task SendGameState(string gameState)
         {
-            await Clients.All.SendAsync("ReceiveGamestate", gameState);
+            await Clients.All.SendAsync("ReceiveGameState", gameState);
         }
     }
 }

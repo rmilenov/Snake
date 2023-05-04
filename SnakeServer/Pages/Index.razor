@@ -32,6 +32,13 @@
             InvokeAsync(StateHasChanged);
         });
 
+        hubConnection.On<string>("ReceiveGameState", (message) =>
+        {
+
+            messages.Add(message);
+            InvokeAsync(StateHasChanged);
+        });
+
         await hubConnection.StartAsync();
     }
 
@@ -40,6 +47,7 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+            await hubConnection.SendAsync("SendGameState", messageInput);
         }
     }
 

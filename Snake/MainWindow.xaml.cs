@@ -92,8 +92,8 @@ namespace Snake
                 await Task.Delay(gameState.Speed);
                 gameState.Move();
                 
-                string gameStateJson = JsonConvert.SerializeObject(gameState);
-                //sendButton_Click(gameStateJson);
+                string gameStateJson = JsonConvert.SerializeObject(gameState,Formatting.Indented);
+                sendButton_Click(gameStateJson);
                 await SendGameState(gameStateJson);
                 
                 
@@ -309,20 +309,20 @@ namespace Snake
             }
         }
 
-        //private async void sendButton_Click(string json)
-        //{
-        //    try
-        //    {
-        //        //await connection.InvokeAsync("SendMessage",
-        //        //    InputField.Text, gameState.snakePositions.First.Value.Column.ToString()+","+gameState.snakePositions.First.Value.Row.ToString()) ;
-        //        await connection.InvokeAsync("SendMessage",
-        //           InputField.Text, json);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        messages.Items.Add(ex.Message);
-        //    }
-        //}
+        private async void sendButton_Click(string json)
+        {
+            try
+            {
+                //await connection.InvokeAsync("SendMessage",
+                //    InputField.Text, gameState.snakePositions.First.Value.Column.ToString()+","+gameState.snakePositions.First.Value.Row.ToString()) ;
+                await connection.InvokeAsync("SendMessage",
+                   InputField.Text, json);
+            }
+            catch (Exception ex)
+            {
+                messages.Items.Add(ex.Message);
+            }
+        }
         private async Task SendGameState(string gameState)
         {
             try
