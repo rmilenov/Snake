@@ -17,12 +17,12 @@
         
       
         >
-        
+
 
     <Viewbox>
 
         <Grid>
-           
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
@@ -35,6 +35,13 @@
                    Text="Score: 0"
                    FontSize="22"
                    Margin="10"/>
+            <ListBox  x:Name="messages"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Right" 
+                      Background="{StaticResource BackgroundColor}" 
+                      Foreground="White" Margin="0,23,-151,0" Height="426" Width="145" Grid.RowSpan="2" d:ItemsSource="{d:SampleData ItemCount=5}">
+                
+            </ListBox>
             <Border x:Name="GridBorder"
                 Grid.Row="1"
                 BorderBrush="{StaticResource GridLineColor}"
@@ -63,8 +70,8 @@
                 </Border.Effect>
                 <Grid FocusManager.FocusedElement="{Binding ElementName=InputField}"
                      >
-                    
-                    
+
+
                     <TextBlock x:Name="InputLabel"
                      Text="Enter your name"
                      HorizontalAlignment="Center"
@@ -84,14 +91,14 @@
                      VerticalContentAlignment="Center"
                      Background="{StaticResource GridBackgroundColor}"
                      Foreground="{StaticResource TextColor}"
-                     BorderThickness="0" RenderTransformOrigin="0.5,0.5" Text="" Opacity="0.9" AutomationProperties.IsRequiredForForm="True" InputScope="PersonalFullName">
+                     BorderThickness="01"  RenderTransformOrigin="0.5,0.5" Text="" Opacity="0.9" AutomationProperties.IsRequiredForForm="True" ForceCursor="True">
                         <TextBox.Resources>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="6"/>
 
                             </Style>
                         </TextBox.Resources>
-                        
+
                         <TextBox.Effect>
                             <DropShadowEffect/>
                         </TextBox.Effect>

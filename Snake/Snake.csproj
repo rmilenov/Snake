@@ -22,7 +22,11 @@
 
   <ItemGroup>
     <EmbeddedResource Include="resources\crash.wav" />
+    <PackageReference Include="Microsoft.AspNet.SignalR.Client" Version="2.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.5" />
     <PackageReference Include="NAudio" Version="2.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <ProjectReference Include="..\SnakeServer\SnakeServer.csproj" />
     <Resource Include="resources\ding.wav" />
   </ItemGroup>
 

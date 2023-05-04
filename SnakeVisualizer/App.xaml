@@ -1,0 +1,19 @@
+﻿<Application x:Class="SnakeVisualizer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SnakeVisualizer"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        
+       
+            <SolidColorBrush x:Key="BackgroundColor">#211E2b</SolidColorBrush>
+            <SolidColorBrush x:Key="GridBackgroundColor">#312c40</SolidColorBrush>
+            <SolidColorBrush x:Key="GridLineColor">#211E2b</SolidColorBrush>
+            <SolidColorBrush x:Key="TextColor">#ebebeb</SolidColorBrush>
+            <SolidColorBrush x:Key="OverlayColor">#7f000000</SolidColorBrush>
+            <SolidColorBrush x:Key="ButtonBorder">#6f6491</SolidColorBrush>
+            <FontFamily x:Key="MainFont">resources/#Droid Sans Mono</FontFamily>
+
+     
+    </Application.Resources>
+</Application>

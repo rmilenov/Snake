@@ -1,9 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNetCore.SignalR.Client;
+using NAudio.Wave.Asio;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+
 using System.Windows.Input;
 using System.Windows.Media;
+using HubConnection = Microsoft.AspNetCore.SignalR.Client.HubConnection;
+
 
 namespace Snake
 {
@@ -25,11 +35,53 @@ namespace Snake
         private readonly Image[,] gridImages;
         private GameState gameState;
         private bool gameRunning;
+        HubConnection connection;
         public MainWindow()
         {
             InitializeComponent();
             gridImages = SetupGrid();
+            connection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:7059/snakehub")
+            .WithAutomaticReconnect()
+            .Build();
+
+            connection.Reconnecting += (sender) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    var newMessage = "Attempting to reconnect...";
+                    messages.Items.Add(newMessage);
+                });
+
+                return Task.CompletedTask;
+            };
+
+            connection.Reconnected += (sender) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    var newMessage = "Reconnected to the server";
+                    messages.Items.Clear();
+                    messages.Items.Add(newMessage);
+                });
+
+                return Task.CompletedTask;
+            };
+
+            connection.Closed += (sender) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    var newMessage = "Connection Closed";
+                    messages.Items.Add(newMessage);
+                   
+                });
+
+                return Task.CompletedTask;
+            };
             gameState = new GameState(rows, cols);
+            
+            //Process.Start("C:\\Users\\Radostin.Milenov\\Desktop\\Unterricht\\Programmierung Verteifung\\Snake\\SnakeVisualizer\\bin\\Debug\\net6.0-windows\\SnakeVisualizer.exe");
 
         }
         private async Task GameLoop()
@@ -39,6 +91,12 @@ namespace Snake
             {
                 await Task.Delay(gameState.Speed);
                 gameState.Move();
+                
+                string gameStateJson = JsonConvert.SerializeObject(gameState);
+                //sendButton_Click(gameStateJson);
+                await SendGameState(gameStateJson);
+                
+                
                 Draw();
 
             }
@@ -191,7 +249,7 @@ namespace Snake
 
         private void InputButton_Click(object sender, RoutedEventArgs e)
         {
-
+           
         }
 
         private async void OnClick(object sender, RoutedEventArgs e)
@@ -208,6 +266,7 @@ namespace Snake
                 InputField.Visibility = Visibility.Hidden;
                 InputLabel.Visibility = Visibility.Hidden;
                 gameRunning = true;
+                await connectButton_Click(sender, e);
                 await RunGame();
                 gameRunning = false;
             }
@@ -225,6 +284,58 @@ namespace Snake
 
             Overlay.Visibility = Visibility.Visible;
             OverlayText.Text = "Game paused! Press space to continue playing!";
+        }
+        private async Task connectButton_Click(object sender, RoutedEventArgs e)
+        {
+            connection.On<string, string>("ReceiveMessage", (user, message) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    var newMessage = $"{user}: {message}";
+                    messages.Items.Add(newMessage);
+                });
+            });
+
+            try
+            {
+                await connection.StartAsync();
+               messages.Items.Add("Connection started");
+                //connectButton.IsEnabled = false;
+                //sendButton.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                messages.Items.Add(ex.Message);
+            }
+        }
+
+        //private async void sendButton_Click(string json)
+        //{
+        //    try
+        //    {
+        //        //await connection.InvokeAsync("SendMessage",
+        //        //    InputField.Text, gameState.snakePositions.First.Value.Column.ToString()+","+gameState.snakePositions.First.Value.Row.ToString()) ;
+        //        await connection.InvokeAsync("SendMessage",
+        //           InputField.Text, json);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        messages.Items.Add(ex.Message);
+        //    }
+        //}
+        private async Task SendGameState(string gameState)
+        {
+            try
+            {
+                await connection.InvokeAsync("SendGameState", gameState);
+                messages.Items.Add(gameState);
+            }
+            catch(Exception ex) 
+            {
+                messages.Items.Add(ex.Message);
+            }
+
+
         }
     }
 }

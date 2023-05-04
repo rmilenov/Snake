@@ -1,0 +1,46 @@
+﻿<Window x:Class="SnakeVisualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SnakeVisualizer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        Background="{StaticResource BackgroundColor}"
+        Foreground="{StaticResource TextColor}"
+        FontFamily="{StaticResource MainFont}"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="300" MinWidth="300"
+        
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+
+        </Grid.RowDefinitions>
+        <ListBox  x:Name="messages"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Right" 
+                      Background="{StaticResource BackgroundColor}" 
+                      Foreground="White" Margin="0,15,34,0" Height="385" Width="123" Grid.RowSpan="2" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+        </ListBox>
+        <Border x:Name="GridBorder"
+                Grid.Row="1"
+                BorderBrush="{StaticResource GridLineColor}"
+                BorderThickness="1.5 "
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderOptions.EdgeMode="Aliased"
+                Margin="20,0,20,20">
+            <UniformGrid x:Name="GameGrid"
+                         Width="400"
+                         Height="400"
+                         Background="{StaticResource GridBackgroundColor}"
+                         SnapsToDevicePixels="True"
+                         RenderOptions.BitmapScalingMode="HighQuality"></UniformGrid>
+
+        </Border>
+    </Grid>
+</Window>

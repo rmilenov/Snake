@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Snake
+namespace SnakeServer
 {
     public class GameState
     {
@@ -137,7 +137,7 @@ namespace Snake
 
             if (hit == GridValue.Outside || hit == GridValue.Snake)
             {
-                Sound.collision.Play();
+                //Sound.collision.Play();
                 GameOver = true;
             }
             else if (hit == GridValue.Empty)
@@ -149,7 +149,7 @@ namespace Snake
             else if (hit == GridValue.Food)
             {
 
-                Sound.ding.Play();
+                //Sound.ding.Play();
                 AddHead(newHeadPosition);
                 Score++;
                 ScoreChanged = true;
