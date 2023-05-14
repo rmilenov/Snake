@@ -11,7 +11,7 @@
         FontFamily="{StaticResource MainFont}"
         WindowStartupLocation="CenterScreen"
         MinHeight="300" MinWidth="300"
-        Loaded="Window_Loaded"
+       
         
         >
     <Grid>

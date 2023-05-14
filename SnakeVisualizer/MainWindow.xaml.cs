@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+
 using HubConnection = Microsoft.AspNetCore.SignalR.Client.HubConnection;
 
 namespace SnakeVisualizer
@@ -27,28 +27,29 @@ namespace SnakeVisualizer
             {Direction.Up , 0 }, {Direction.Down,180 },
             {Direction.Right,90 }, {Direction.Left, 270}
         };
-        private string json="";
-        private bool isDirty=false;
+        private string json = "";
+        private bool isDirty = true;
         private readonly int rows = 20, cols = 20;
         internal Image[,] gridImages;
-        private GameState gameState;
+        private GameState gameState;// = new GameState(20, 20);
         HubConnection connection;
         public MainWindow()
         {
-           
+          
             InitializeComponent();
             gridImages = SetupGrid();
-            //gameState = new GameState(rows, cols);
+            gameState = new GameState(rows, cols);
             connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7059/snakehub")
             .WithAutomaticReconnect()
             .Build();
+            ReceiveGameState();
 
             try
             {
                 connection.StartAsync();
                 messages.Items.Add("Connection started");
-                
+
             }
             catch (Exception ex)
             {
@@ -89,9 +90,11 @@ namespace SnakeVisualizer
                 return Task.CompletedTask;
             };
 
-            _ = GetMessage();
-           
 
+
+            Draw();
+            //_ = GetMessage();
+            _ = GameLoop();
         }
 
         private Image[,] SetupGrid()
@@ -138,87 +141,71 @@ namespace SnakeVisualizer
         //    }));
         //    return;
         //}
-        private Task GetMessage()
-        {
-            connection.On<string, string>("ReceiveMessage", (user, message) =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    var newMessage = $"{user}: {message}";
-                    messages.Items.Add(newMessage);
-                    json = newMessage;
-                    
-                });
-            });
-            return Task.CompletedTask;
-        }
-
-        //private async Task ReceiveGameState()
+        //private Task GetMessage()
         //{
-        //    connection.On<string>("ReceiveGameState", (message) =>
+        //    connection.On<string, string>("ReceiveMessage", (user, message) =>
         //    {
-        //        this.Dispatcher.Invoke(() =>
+        //        Dispatcher.Invoke(() =>
         //        {
-
-        //            this.json = message.ToString();
-        //            messages.Items.Add(message);
+        //            var newMessage = $"{user}: {message}";
+        //            messages.Items.Add(newMessage);
+        //            json = newMessage;
 
         //        });
         //    });
-
+        //    return Task.CompletedTask;
         //}
-        private Task ReceiveGameState()
+
+        private async Task ReceiveGameState()
         {
             connection.On<string>("ReceiveGameState", (message) =>
             {
-                Dispatcher.Invoke(() =>
+                this.Dispatcher.Invoke(() =>
                 {
-
-                    
-                    gameState = JsonConvert.DeserializeObject<GameState>(message);
-                    JsonConvert.PopulateObject(json, gameState);
-                    if (messages.Items.Count > 0)
-                    {
-                        messages.Items.RemoveAt(1);
-                        messages.Items.Add(message);
-                    }
-                    isDirty = true;
-
+                    message = message.Replace("\r\n", "");// - Fehler bei der übertragung
+                    JsonConvert.PopulateObject(message, gameState);
+                    Console.WriteLine(message);
+                    messages.Items.Add(message);
+                    gameState.Move();
+                    Draw();
+                    gameState.Move();
                 });
             });
-            return Task.CompletedTask;
+
         }
 
         private async Task GameLoop()
         {
+            await Task.Delay(gameState.Speed);
 
-            do
-            {
-                //sendButton_Click(gameStateJson);
-                await ReceiveGameState();
-                //GameState gameState = new GameState(rows, cols);
-                gameState = JsonConvert.DeserializeObject<GameState>(json);
-                Popup popup = new Popup(gameState);
-                //gridImages = SetupGrid();
-                //gameState.Move();
-                Draw();
+            //do
+            //{
+            //sendButton_Click(gameStateJson);
+            //await ReceiveGameState();
+            //GameState gameState = new GameState(rows, cols);
+            //gameState = JsonConvert.DeserializeObject<GameState>(json);
 
-            } while (!gameState.GameOver);
+            //gridImages = SetupGrid();
+            gameState.Move();
+            Draw();
+
+            //} while (!gameState.GameOver);
+            //return Task.CompletedTask;
         }
-        
+
         private void Draw()
         {
             DrawGrid();
             DrawSnakeHead();
-            
+
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             while (isDirty)
-            { 
-                Draw(); 
-                await GameLoop();
+            {
+                Draw();
+                GameLoop();
             }
         }
 

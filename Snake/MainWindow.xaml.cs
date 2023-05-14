@@ -334,8 +334,6 @@ namespace Snake
             {
                 messages.Items.Add(ex.Message);
             }
-
-
         }
     }
 }

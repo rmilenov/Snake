@@ -37,6 +37,7 @@ namespace SnakeVisualizer
             Player = "";
             Speed = 200;
             ScoreChanged = false;
+            
 
 
             AddSnake();
