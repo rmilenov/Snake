@@ -166,7 +166,6 @@ namespace SnakeVisualizer
                     JsonConvert.PopulateObject(message, gameState);
                     Console.WriteLine(message);
                     messages.Items.Add(message);
-                    gameState.Move();
                     Draw();
                     gameState.Move();
                 });
